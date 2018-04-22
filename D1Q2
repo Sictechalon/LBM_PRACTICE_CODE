@@ -58,10 +58,10 @@ int main(){
 
 	//文件输出
 	ofstream outfile;
-	string InitialFileName("data_d1q3_lbm.txt");
+	string InitialFileName("data_d1q2_lbm.txt");
 
 	outfile.open(InitialFileName, ostream::app);        /*以添加模式打开文件*/
-	outfile << "----------------------------D1Q3 LBM CODE------------------------" << endl;
+	outfile << "----------------------------D1Q2 LBM CODE------------------------" << endl;
 	for (i = 0; i >= 0 && i <= m; ++i)
 	{
 		outfile << x[i] << " " << rho[i] << endl;
