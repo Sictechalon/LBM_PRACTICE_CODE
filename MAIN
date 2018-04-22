@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main(){
+
+	const int m = 100; //定义常量
+    double f0[m+1], f1[m+1], f2[m+1], rho[m+1], feq[m+1], x[m+1];  //定义变量数组
+	x[0] = 0.0;
+	double dt = 1.0, dx = 1.0, alpha = 0.25, twall = 1.0; //定义参数
+	int mstep = 100;
+	int i;
+	double csq = dx * dx / (dt * dt);
+	double omega = 1.0 / (alpha / (dt * csq) + 0.5);
+
+    for (i=1; i <= m && i >= 1; ++i)
+    {
+	    x[i] = x[i - 1] + dx;
+		//cout << x[i] << "\n";
+    }
+	//初始化条件
+	for (i=0; i <= m && i >= 0; ++i) 
+	{
+		rho[i] = 0.0;
+		f1[i] = 0.5 * rho[i];
+		f2[i] = 0.5 * rho[i];
+	}
+
+	
+	
+	for (int k = 1; k <= mstep; ++k )
+	{
+		//碰撞过程
+		for (i=0; i <= m; ++i)
+		{
+			rho[i] = f1[i] + f2[i];
+			feq[i] = 0.5 * rho[i]; 
+			f1[i] = (1. - omega) * f1[i] + omega * feq[i];
+			f2[i] = (1. - omega) * f2[i] + omega * feq[i];
+			
+			if (k==1 || k==10 || k==50)
+			    cout << x[i] << " " <<f1[i] << "\n";
+		}
+		//迁移过程
+		for (i = 1; i <= m - 1 && i >= 1; ++i)
+		{
+			f1[m - i] = f1[m - i - 1];
+			f2[i - 1] = f2[i];
+
+		}
+		//边界条件
+		f1[0] = twall - f2[0];
+		f1[m] = f1[m - 1];
+		f2[m] = f2[m - 1];
+	}
+
+	//文件输出
+	ofstream outfile;
+	string InitialFileName("data_d1q3_lbm.txt");
+
+	outfile.open(InitialFileName, ostream::app);        /*以添加模式打开文件*/
+	outfile << "----------------------------D1Q3 LBM CODE------------------------" << endl;
+	for (i = 0; i >= 0 && i <= m; ++i)
+	{
+		outfile << x[i] << " " << rho[i] << endl;
+	}
+	outfile.close();                                 /*关闭文件*/
+
+
+	getchar();
+	return 0;
+	
+}
+
