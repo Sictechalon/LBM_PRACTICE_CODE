@@ -1,0 +1,37 @@
+!==========FEM_1D==========
+!==========HAHAH===========
+!Finite difference code for 1-D diffusion problem
+parameter (m = 100)
+
+real dens, fo(0:m), f(0:m)
+integer i
+open (2, file='finitrs')
+dx = 1.0
+dt = 0.500
+alpha = 0.25
+mstep = 400
+do i=0,m
+    fo(i) = 0.0
+end do
+
+fo(0) = 1.0
+f(0) = 1.0
+fo(m) = fo(m-1)
+f(m) = f(m-1)
+
+do kk=1,mstep
+    do i=1,m-1
+        f(i) = fo(i)+dt*alpha*(fo(i+1)-2.*fo(i)+fo(i-1))/(dx*dx)
+    end do
+    do i=1,m-2
+        fo(i) = f(i)
+    end do
+    fo(m) = f(m-1)
+end do
+x = 0.0
+do i=0,m
+    write (2,*)x,f(i)
+    x = x + dx
+end do
+stop
+end
